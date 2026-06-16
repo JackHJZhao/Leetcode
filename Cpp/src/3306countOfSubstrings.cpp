@@ -1,6 +1,8 @@
 #include <string>
 #include <vector>
 #include <iostream>
+#include <algorithm>
+#include <unordered_set>
 #include "common.h"
 using namespace std;
 
@@ -18,61 +20,39 @@ static const char* PROBLEM_DESC = R"(
 // ========== 题解代码 ==========
 class Solution {
 public:
-    long long countOfSubstrings(string s, int k) {
-        long long ans = 0;
-        int n = s.size();
-        int aeiou_mask = (1 << ('a' - 'a')) + (1 << ('e' - 'a')) + (1 << ('i' - 'a')) + (1 << ('o' - 'a')) + (1 << ('u' - 'a'));
-        int mask = 0;
-        vector<int> aeiou_last(26, -1);
-        int j = 0;
-        int i = 0;
-        int t = 0;
-        int cur_k = 0;
-        for (; i < n; ++i) {
-            int idx = (s[i] - 'a');
-            if ((aeiou_mask >> idx) & 0x01) {
-                aeiou_last[idx] = i;
-                mask |= (1 << idx);
-                if (cur_k == k && mask == aeiou_mask) {
-                    t = std::max(t, j);
-                    for ( ; t < i; ++t) {
-                        int index = (s[t] - 'a');
-                        if (aeiou_last[index] == t || ((aeiou_mask >> index) & 0x01) == 0) {
-                            break;
-                        }
-                    }
-                    ans += (t - j + 1);
-                }
+    long long countOfSubstrings(string word, int k)
+    {
+        return CountSubstrings(word, k) - CountSubstrings(word, k+1);
+    }
+
+    long long CountSubstrings(string word, int k)
+    {
+        unordered_map<char, int> visit;
+        long long res = 0;
+        int i = 0, n = word.size(), consonants = 0;
+        for (int j = 0; j < n; j++) {
+            char c = word[j];
+            if (vowels.count(c) != 0) {
+                visit[c]++;
             } else {
-                cur_k++;
-                if (cur_k > k) {
-                    for ( ; j <= i; ++j) {
-                        int index = (s[j] - 'a');
-                        if (((aeiou_mask >> index) & 0x01) == 0) {
-                            ++j;
-                            --cur_k;
-                            break;
-                        }
-                        if (aeiou_last[index] == j) {
-                            mask &= (~ (1 << index));
-                            aeiou_last[index] = -1;
-                        }
-                    }
+                consonants++;
+            }
+
+            while (visit.size() == vowels.size() && consonants >= k) {
+                res += n - j;
+                if (vowels.count(word[i]) != 0) {
+                    visit[word[i]]--;
+                    if (visit[word[i]] == 0) visit.erase(word[i]);
+                } else {
+                    consonants--;
                 }
-                if (cur_k == k && mask == aeiou_mask) {
-                    t = std::max(t, j);
-                    for (; t < i; ++t) {
-                        int index = (s[t] - 'a');
-                        if (aeiou_last[index] == t || ((aeiou_mask >> index) & 0x01) == 0) {
-                            break;
-                        }
-                    }
-                    ans += (t - j + 1);
-                }
+                i++;
             }
         }
-        return ans;
+        return res;
     }
+
+    unordered_set<char> vowels{'a','e','i','o','u'};
 };
 
 // ========== 默认测试用例 ==========
@@ -83,7 +63,7 @@ struct TestCase {
 };
 
 static TestCase DEFAULT_TESTS[] = {
-    {"ieaouqqieaouqq", 1, 8},
+    {"ieaouqqieaouqq", 1, 3},
     {"aeiou", 0, 1},
     {"aeioqq", 1, 0},
 };
