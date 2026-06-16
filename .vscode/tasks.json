@@ -1,4 +1,5 @@
 {
+    "version": "2.0.0",
     "tasks": [
         {
             "type": "cppbuild",
@@ -22,7 +23,35 @@
                 "isDefault": true
             },
             "detail": "调试器生成的任务。"
+        },
+        {
+            "label": "C++: 编译当前文件(debug)",
+            "type": "shell",
+            "command": "clang++",
+            "args": [
+                "-std=c++17",
+                "-O0",
+                "-g",
+                "-Wall",
+                "-I",
+                "${workspaceFolder}/Cpp/src",
+                "${file}",
+                "-o",
+                "${workspaceFolder}/Cpp/bin/${fileBasenameNoExtension}"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/Cpp"
+            },
+            "group": {
+                "kind": "build"
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ]
         }
-    ],
-    "version": "2.0.0"
+    ]
 }

@@ -106,7 +106,7 @@ var defaultTests = []testCase{
 // ========== 主函数 ==========
 func main() {
 	if len(os.Args) > 1 && (os.Args[1] == "--help" || os.Args[1] == "-h") {
-		fmt.Println(problemDesc)
+		fmt.Print(problemDesc)
 		return
 	}
 
