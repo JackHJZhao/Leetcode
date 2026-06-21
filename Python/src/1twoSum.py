@@ -25,24 +25,7 @@ class Solution:
 
 
 # ========== 工具函数 ==========
-def parse_vector(s: str) -> list[int]:
-    """解析 Leetcode 风格的数组: '[1,2,3]' 或 '1,2,3' 或 '1 2 3'"""
-    s = s.strip().lstrip("[").rstrip("]")
-    if not s:
-        return []
-    parts = s.replace(",", " ").split()
-    return [int(p) for p in parts]
-
-
-def format_vector(v: list[int]) -> str:
-    """格式化输出数组"""
-    return "[" + ",".join(str(x) for x in v) + "]"
-
-
-def vector_equal(a: list[int], b: list[int]) -> bool:
-    """比较两个数组是否相等（允许任意顺序）"""
-    from collections import Counter
-    return Counter(a) == Counter(b)
+from leetcode_util import parse_vector, format_vector, vector_equal
 
 
 # ========== 默认测试用例 ==========
